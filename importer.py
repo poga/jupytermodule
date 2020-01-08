@@ -103,7 +103,6 @@ class NbFinder(object):
 from importlib import import_module
 
 
-# url = "http://localhost:8000/Untitled.ipynb"
 def nbimport(url):
     return import_module(url)
 
