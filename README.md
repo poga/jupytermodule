@@ -1,6 +1,6 @@
 # jupyter-module
 
-Import jupyter notebook as a python module
+Import jupyter notebooks as python modules
 
 ## Install
 

@@ -1,0 +1,1 @@
+from jupytermodule.finder import open
