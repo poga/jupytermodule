@@ -12,23 +12,26 @@ import ast
 from extractor import Extractor
 
 
-class NbFinder(object):
+class JupyterFinder(object):
     def try_url(self, url_without_extension):
         url = url_without_extension
-        # print(url)
+
+        if not (url.startswith("http") or url.startswith("file")):
+            return None
+
         try:
             resp = urlopen(url)
 
-            if resp.getcode() == 200:
+            if resp:
                 return url
+
         except Exception as e:
             # try again with .ipynb extension
             url += '.ipynb'
-            # print(url)
             try:
                 resp = urlopen(url)
 
-                if resp.getcode() == 200:
+                if resp:
                     return url
             except Exception as e:
                 return None
@@ -39,16 +42,15 @@ class NbFinder(object):
 
     def load_module(self, fullname):
         url = self.try_url(fullname)
-        # print("loading", url)
-        # If the module already exists in `sys.modules` we *must* use that
-        # module, it's a mandatory part of the importer protcol
+
         if fullname in sys.modules:
-            # Do nothing, just return None. This likely breaks the idempotency
-            # of import statements, but again, in the interest of being brief,
-            # we skip this part.
             return
 
         try:
+            # The importer protocol requires the loader create a new module
+            # object, set certain attributes on it, then add it to
+            # `sys.modules` before executing the code inside the module (which
+            # is when the "module" actually gets code inside it)
             m = types.ModuleType(fullname,
                                  'remote notebook: {}'.format(fullname))
             m.__file__ = '<notebook {}>'.format(fullname)
@@ -56,10 +58,7 @@ class NbFinder(object):
             m.__loader__ = self
             sys.modules[url] = m
 
-            # The importer protocol requires the loader create a new module
-            # object, set certain attributes on it, then add it to
-            # `sys.modules` before executing the code inside the module (which
-            # is when the "module" actually gets code inside it)
+            # Try to load notebook
             resp = urlopen(url)
 
             body = resp.read().decode()
@@ -71,16 +70,10 @@ class NbFinder(object):
             tree = ast.parse(code)
             extractor = Extractor()
             extractor.visit(tree)
-            # print(analyzer.code())
 
-            # Attempt to open the file, and exec the code therein within the
-            # newly created module's namespace
-            # with open(location, 'r') as f:
-            # print("execing", analyzer.code(), url)
             exec(extractor.code(), sys.modules[url].__dict__)
             sys.modules[fullname] = sys.modules[url]
 
-            # Return our newly create module
             return m
 
         except Exception as e:
@@ -103,8 +96,24 @@ class NbFinder(object):
 from importlib import import_module
 
 
-def nbimport(url):
+def open(url):
     return import_module(url)
 
 
-sys.meta_path.append(NbFinder())
+sys.meta_path.append(JupyterFinder())
+
+import unittest
+
+
+class JupyterFinderTest(unittest.TestCase):
+    def test_local_file(self):
+        url = "file:///Users/poga/projects/jupyter-module/examples/primes.ipynb"
+
+        m = open(url)
+
+        self.assertEqual(m.primes(10), [2, 3, 5, 7])
+        self.assertEqual(m.PI, 3.1415)
+
+
+if __name__ == '__main__':
+    unittest.main()
