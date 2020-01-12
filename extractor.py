@@ -1,6 +1,5 @@
 import ast
 import astor
-from pprint import pprint
 
 
 class Extractor(ast.NodeVisitor):

@@ -3,7 +3,6 @@ import types
 import os.path
 from os.path import join
 import re
-# from pprint import pprint
 from urllib.request import urlopen
 import nbformat
 from nbconvert import PythonExporter
