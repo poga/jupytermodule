@@ -9,7 +9,7 @@ import nbformat
 from nbconvert import PythonExporter
 import ast
 
-from analyzer import Analyzer
+from extractor import Extractor
 
 
 class NbFinder(object):
@@ -69,15 +69,15 @@ class NbFinder(object):
             code = re.sub(r'%.+', "", code)
 
             tree = ast.parse(code)
-            analyzer = Analyzer()
-            analyzer.visit(tree)
+            extractor = Extractor()
+            extractor.visit(tree)
             # print(analyzer.code())
 
             # Attempt to open the file, and exec the code therein within the
             # newly created module's namespace
             # with open(location, 'r') as f:
             # print("execing", analyzer.code(), url)
-            exec(analyzer.code(), sys.modules[url].__dict__)
+            exec(extractor.code(), sys.modules[url].__dict__)
             sys.modules[fullname] = sys.modules[url]
 
             # Return our newly create module
