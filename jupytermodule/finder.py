@@ -92,7 +92,6 @@ class JupyterFinder(object):
             raise e
 
 
-
 def open(url):
     finder = JupyterFinder()
     if finder.find_module(url):
@@ -103,18 +102,20 @@ sys.meta_path.append(JupyterFinder())
 
 import unittest
 
+import pathlib
+
 
 class JupyterFinderTest(unittest.TestCase):
     def test_local_file(self):
-        url = "file:///Users/poga/projects/jupyter-module/examples/primes.ipynb"
+        url = join(pathlib.Path().absolute(), "examples/primes.ipynb")
 
-        m = open(url)
+        m = open("file://" + url)
 
         self.assertEqual(m.primes(10), [2, 3, 5, 7])
         self.assertEqual(m.PI, 3.1415)
 
     def test_remote_file(self):
-        url = "https://raw.githubusercontent.com/poga/jupyter-module/master/examples/primes.ipynb"
+        url = "https://raw.githubusercontent.com/poga/jupytermodule/master/examples/primes.ipynb"
 
         m = open(url)
 
