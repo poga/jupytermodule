@@ -13,7 +13,7 @@ pip install jupytermodule
 ```python
 from jupytermodule import open
 
-notebook_module = open("...")
+notebook_module = open("https://raw.githubusercontent.com/poga/jupyter-module/master/examples/primes.ipynb")
 
 print(notebook_module.primes(10))
 # [2,3,5,7]
