@@ -8,7 +8,7 @@ import nbformat
 from nbconvert import PythonExporter
 import ast
 
-from extractor import Extractor
+from jupytermodule.extractor import Extractor
 
 
 class JupyterFinder(object):
@@ -92,11 +92,11 @@ class JupyterFinder(object):
             raise e
 
 
-from importlib import import_module
-
 
 def open(url):
-    return import_module(url)
+    finder = JupyterFinder()
+    if finder.find_module(url):
+        return finder.load_module(url)
 
 
 sys.meta_path.append(JupyterFinder())
@@ -107,6 +107,14 @@ import unittest
 class JupyterFinderTest(unittest.TestCase):
     def test_local_file(self):
         url = "file:///Users/poga/projects/jupyter-module/examples/primes.ipynb"
+
+        m = open(url)
+
+        self.assertEqual(m.primes(10), [2, 3, 5, 7])
+        self.assertEqual(m.PI, 3.1415)
+
+    def test_remote_file(self):
+        url = "https://raw.githubusercontent.com/poga/jupyter-module/master/examples/primes.ipynb"
 
         m = open(url)
 
