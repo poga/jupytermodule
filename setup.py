@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="jupytermodule",  # Replace with your own username
-    version="0.4.0",
+    version="0.5.0",
     author="Poga",
     author_email="poga.po@gmail.com",
     description="import jupyter notebooks as python modules",
@@ -22,4 +22,9 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     python_requires='>=3.6',
+    install_requires=[
+        'nbformat',
+        'nbconvert',
+        'astor'
+        ]
 )
