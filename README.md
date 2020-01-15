@@ -30,6 +30,15 @@ print(notebook_module.PI)
 # 3.1415
 ```
 
+## Development
+
+#### Run all tests
+
+```
+$ make test
+```
+
 ## License
 
 MIT
+
