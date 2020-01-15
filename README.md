@@ -2,6 +2,7 @@
 
 ![](https://img.shields.io/pypi/v/jupytermodule?style=flat-square)
 ![](https://img.shields.io/pypi/l/jupytermodule?style=flat-square)
+[![Build Status](https://travis-ci.org/poga/jupytermodule.svg?branch=master)](https://travis-ci.org/poga/jupytermodule)
 
 Import jupyter notebooks as python modules.
 
